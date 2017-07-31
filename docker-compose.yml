@@ -1,0 +1,6 @@
+version: "3"
+
+services:
+  cihm-file-access:
+    image: cihm-file-access:latest
+    command: yarn run start
