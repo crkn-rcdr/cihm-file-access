@@ -1,0 +1,28 @@
+{
+  "name": "cihm-file-access",
+  "version": "1.0.0",
+  "description": "Service for Canadiana TDR direct file access",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node .",
+    "dev": "./node_modules/nodemon/bin/nodemon.js -w src -e js -x 'yarn run start'",
+    "test": "jest",
+    "testwatch": "./node_modules/nodemon/bin/nodemon.js -w src -e js -x 'yarn run test'"
+  },
+  "repository": "https://github.com/c7a/cihm-file-access",
+  "author": "Sascha Adler <sascha.adler@canadiana.ca>",
+  "license": "MIT",
+  "dependencies": {
+    "crc": "^3.4.4",
+    "kcors": "^2.2.1",
+    "koa": "^2.3.0",
+    "koa-onerror": "^3.1.0",
+    "koa-unless": "^1.0.7",
+    "njwt": "^0.4.0"
+  },
+  "devDependencies": {
+    "jest": "^20.0.4",
+    "nodemon": "^1.11.0",
+    "supertest": "^3.0.0"
+  }
+}
