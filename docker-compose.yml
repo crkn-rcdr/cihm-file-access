@@ -4,3 +4,5 @@ services:
   cihm-file-access:
     image: cihm-file-access:latest
     command: yarn run start
+    volumes:
+      - /repository:/repository

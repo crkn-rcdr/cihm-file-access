@@ -8,4 +8,5 @@ services:
     ports:
       - "3000:3000"
     volumes:
+      - /repository:/repository
       - ./src:/home/node/cihm-file-access/src
