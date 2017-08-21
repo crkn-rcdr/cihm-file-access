@@ -1,4 +1,5 @@
 const unless = require('koa-unless');
+const mime = require('mime-types');
 const TDR = require('../tdr');
 
 const tdrObj = new TDR();
@@ -8,7 +9,8 @@ module.exports = (opts = {}) => {
     let path = await tdrObj.path(ctx.config.repositories, ctx.path);
     if (path) {
       ctx.set('X-Sendfile', path);
-      ctx.body = { path };
+      ctx.body = '';
+      ctx.type = mime.lookup(path);
     } else {
       ctx.throw(404, 'File not found.');
     }
