@@ -5,8 +5,8 @@ const request = require('supertest');
 const tdr = require('../tdr');
 
 const app = new Koa();
-app.context.config = require('../../../test/config.js');
-app.use(tdr());
+const repositories = require('../../../test/config').repositories;
+app.use(tdr(repositories));
 
 it('sets X-Sendfile when given a valid path', () => {
   return request(http.createServer(app.callback()))

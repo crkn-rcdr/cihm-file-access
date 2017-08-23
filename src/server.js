@@ -8,18 +8,17 @@ const tdr = require('./middleware/tdr');
 
 const app = new Koa();
 
-app.context.config = require(process.env.APP_CONFIG || '../config');
-let base = app.context.config.repositoryBase;
-app.context.config.repositories = fs.readdirSync(base).map((directory) => {
-  return `${base}/${directory}`;
+const config = require(process.env.APP_CONFIG || '../config');
+config.repositories = fs.readdirSync(config.repositoryBase).map((directory) => {
+  return `${config.repositoryBase}/${directory}`;
 })
 
 onerror(app);
 
 app.use(cors({ origin: '*' }));
 
-app.use(jwt(app.context.config.secrets));
+app.use(jwt(config.secrets));
 app.use(fileJwt());
-app.use(tdr());
+app.use(tdr(config.repositories));
 
 app.listen(3000);

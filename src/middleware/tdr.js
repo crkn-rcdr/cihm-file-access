@@ -4,9 +4,9 @@ const TDR = require('../tdr');
 
 const tdrObj = new TDR();
 
-module.exports = (opts = {}) => {
+module.exports = (repositories) => {
   const middleware = async function tdr(ctx, next) {
-    let path = await tdrObj.path(ctx.config.repositories, ctx.path);
+    let path = await tdrObj.path(repositories, ctx.path);
     if (path) {
       ctx.set('X-Sendfile', path);
       ctx.body = '';
