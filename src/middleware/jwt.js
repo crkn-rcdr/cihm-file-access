@@ -3,41 +3,44 @@ const nJwt = require('njwt');
 
 module.exports = (opts) => {
   const middleware = async function jwt(ctx, next) {
-    let keyId;
     let token;
 
     if (ctx.headers.authorization) {
       let headerMatch = ctx.headers.authorization.match(
-        /^C7A2 Key=(.+),Token=(.+)$/i
+        /^C7A2 (.+)$/i
       );
 
-      [keyId, token] = [headerMatch[1], headerMatch[2]];
+      [token] = [headerMatch[1]];
     } else {
-      keyId = ctx.query['key'];
       token = ctx.query['token'];
     }
 
-    if (!keyId && !token) {
+    if (!token) {
       ctx.throw(401, `File access requires a signed JWT in the Authorization header, in the form
 
-Authorization: C7A2 Key=$key,Token=$jwt
+Authorization: C7A2 $jwt
 
-Alternatively, the key and JWT can be provided in the query string
+Alternatively, the JWT can be provided in the query string
 
-?key=$key&token=$token`);
+?token=$token`);
     }
 
-    let signingKey = ctx.config.secrets[keyId];
-
-    if (!signingKey) {
-      ctx.throw(401, `Unknown key id ${keyId}`);
+    let validatedIssuer, jwtData;
+    for (issuer of Object.keys(ctx.config.secrets)) {
+      try {
+        jwtData = nJwt.verify(token, ctx.config.secrets[issuer]).body;
+        validatedIssuer = issuer;
+        break;
+      } catch (err) {
+      }
     }
 
-    let jwtData;
-    try {
-      jwtData = nJwt.verify(token, signingKey).body;
-    } catch (err) {
-      ctx.throw(401, err.message);
+    if (!jwtData) {
+      ctx.throw(401, `Could not verify JWT`);
+    }
+
+    if (jwtData.iss != validatedIssuer) {
+      ctx.throw(401, `Validated issuer ${validatedIssuer} does not match JWT 'iss' claim`);
     }
 
     let [, uid, ...filePath] = ctx.path.split('/');

@@ -6,10 +6,10 @@ const nJwt = require('njwt');
 const secrets = require('../../../test/config').secrets;
 
 let jwts = {
-  full: nJwt.create({}, secrets[1]),
-  oocihmOnly: nJwt.create({ uids: '^oocihm\.' }, secrets[1]),
-  txtOnly: nJwt.create({ files: '\.txt$' }, secrets[1]),
-  otherKey: nJwt.create({}, secrets[2])
+  full: nJwt.create({ iss: 1 }, secrets[1]),
+  oocihmOnly: nJwt.create({ iss: 1, uids: '^oocihm\.' }, secrets[1]),
+  txtOnly: nJwt.create({ iss: 1, files: '\.txt$' }, secrets[1]),
+  otherKey: nJwt.create({ iss: 1 }, secrets[2])
 };
 
 jwts.expired = nJwt.create({}, secrets[1]);
@@ -34,54 +34,54 @@ it('throws 401 when lacking credentials', () => {
 it('validates full credentials', () => {
   return request(http.createServer(app.callback()))
     .get('/foo')
-    .set('Authorization', `C7A2 Key=1,Token=${jwts.full.compact()}`)
+    .set('Authorization', `C7A2 ${jwts.full.compact()}`)
     .expect(200);
 });
 
-it('validates full credentials using query string parameters', () => {
+it('validates full credentials using query string parameter', () => {
   return request(http.createServer(app.callback()))
-    .get(`/foo?key=1&token=${jwts.full.compact()}`)
+    .get(`/foo?token=${jwts.full.compact()}`)
     .expect(200);
 });
 
 it('validates uid-specific credentials', () => {
   return request(http.createServer(app.callback()))
     .get('/oocihm.01096/foo.txt')
-    .set('Authorization', `C7A2 Key=1,Token=${jwts.oocihmOnly.compact()}`)
+    .set('Authorization', `C7A2 ${jwts.oocihmOnly.compact()}`)
     .expect(200);
 });
 
 it('rejects uid-specific credentials', () => {
   return request(http.createServer(app.callback()))
     .get('/ooe.19191/foo.txt')
-    .set('Authorization', `C7A2 Key=1,Token=${jwts.oocihmOnly.compact()}`)
+    .set('Authorization', `C7A2 ${jwts.oocihmOnly.compact()}`)
     .expect(403);
 });
 
 it('validates file-specific credentials', () => {
   return request(http.createServer(app.callback()))
     .get('/oocihm.01096/foo.txt')
-    .set('Authorization', `C7A2 Key=1,Token=${jwts.txtOnly.compact()}`)
+    .set('Authorization', `C7A2 ${jwts.txtOnly.compact()}`)
     .expect(200);
 });
 
 it('rejects file-specific credentials', () => {
   return request(http.createServer(app.callback()))
     .get('/ooe.19191/foo.pdf')
-    .set('Authorization', `C7A2 Key=1,Token=${jwts.txtOnly.compact()}`)
+    .set('Authorization', `C7A2 ${jwts.txtOnly.compact()}`)
     .expect(403);
 });
 
-it('rejects JWTs from incorrect keys', () => {
+it('rejects JWTs from incorrect issuers', () => {
   return request(http.createServer(app.callback()))
     .get('/ooe.19191/foo.pdf')
-    .set('Authorization', `C7A2 Key=1,Token=${jwts.otherKey.compact()}`)
+    .set('Authorization', `C7A2 ${jwts.otherKey.compact()}`)
     .expect(401);
 });
 
 it('throws 401 when JWT is expired', () => {
   return request(http.createServer(app.callback()))
     .get('/foo')
-    .set('Authorization', `C7A2 Key=1,Token=${jwts.expired.compact()}`)
+    .set('Authorization', `C7A2 ${jwts.expired.compact()}`)
     .expect(401);
 });
