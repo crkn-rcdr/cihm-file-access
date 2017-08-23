@@ -13,6 +13,7 @@
   "author": "Sascha Adler <sascha.adler@canadiana.ca>",
   "license": "MIT",
   "dependencies": {
+    "cihm-jwt": "https://github.com/c7a/cihm-jwt.git#v1.0.0",
     "crc": "^3.4.4",
     "kcors": "^2.2.1",
     "koa": "^2.3.0",

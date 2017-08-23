@@ -417,6 +417,13 @@ ci-info@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-1.0.0.tgz#dc5285f2b4e251821683681c381c3388f46ec534"
 
+"cihm-jwt@https://github.com/c7a/cihm-jwt.git#v1.0.0":
+  version "1.0.0"
+  resolved "https://github.com/c7a/cihm-jwt.git#e4045c807c1ea8fcf00f26a8532fe6b8d07dee99"
+  dependencies:
+    koa-unless "^1.0.7"
+    njwt "^0.4.0"
+
 cliui@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/cliui/-/cliui-2.1.0.tgz#4b475760ff80264c762c3a1719032e91c7fea0d1"

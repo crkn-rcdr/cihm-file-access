@@ -2,7 +2,8 @@ const fs = require('fs');
 const Koa = require('koa');
 const cors = require('kcors');
 const onerror = require('koa-onerror');
-const jwt = require('./middleware/jwt');
+const jwt = require('cihm-jwt');
+const fileJwt = require('./middleware/fileJwt');
 const tdr = require('./middleware/tdr');
 
 const app = new Koa();
@@ -17,7 +18,8 @@ onerror(app);
 
 app.use(cors({ origin: '*' }));
 
-app.use(jwt());
+app.use(jwt(app.context.config.secrets));
+app.use(fileJwt());
 app.use(tdr());
 
 app.listen(3000);
